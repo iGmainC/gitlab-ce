@@ -16,6 +16,8 @@ on:
     branches: [ "main" ]
   workflow_call:
     secrets:
+      GITHUB_TOKEN:
+        required: true
       DOCKER_USERNAME:
         required: true
       DOCKERHUB_TOKEN:
