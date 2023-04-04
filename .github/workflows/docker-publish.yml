@@ -14,6 +14,12 @@ on:
     tags: [ 'v*.*.*', 'latest' ]
   pull_request:
     branches: [ "main" ]
+  workflow_call:
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
 
 env:
   # Use docker.io for Docker Hub if empty
