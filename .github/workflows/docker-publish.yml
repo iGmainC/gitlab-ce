@@ -14,10 +14,6 @@ on:
     tags: [ 'v*.*.*', 'latest' ]
   pull_request:
     branches: [ "main" ]
-  workflow_call:
-    secrets:
-      DOCKER_USERNAME: "${{ secrets.DOCKER_USERNAME }}"
-      DOCKER_PASSWORD: "${{ secrets.DOCKER_PASSWORD }}"
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -28,6 +24,7 @@ env:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -35,15 +32,7 @@ jobs:
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
-    strategy:
-      matrix:
-        REGISTRY:
-          - registry_name: "ghcr.io"
-            username: "${{ github.actor }}"
-            password: "${{ secrets.GITHUB_TOKEN }}"
-          - registry_name: ""
-            username: "${{ secrets.DOCKERHUB_USERNAME }}"
-            password: "${{ secrets.DOCKERHUB_TOKEN }}"
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -63,13 +52,13 @@ jobs:
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
-      - name: Log into registry ${{ matrix.REGISTRY.registry_name }}
+      - name: Log into registry ${{ env.REGISTRY }}
         if: github.event_name != 'pull_request'
         uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
         with:
-          registry: ${{ matrix.REGISTRY.registry_name }}
-          username: ${{ matrix.REGISTRY.username }}
-          password: ${{ matrix.REGISTRY.password }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
