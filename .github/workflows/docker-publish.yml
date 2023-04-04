@@ -16,12 +16,8 @@ on:
     branches: [ "main" ]
   workflow_call:
     secrets:
-      GITHUB_TOKEN:
-        required: true
-      DOCKER_USERNAME:
-        required: true
-      DOCKERHUB_TOKEN:
-        required: true
+      DOCKER_USERNAME: "${{ secrets.DOCKER_USERNAME }}"
+      DOCKER_PASSWORD: "${{ secrets.DOCKER_PASSWORD }}"
 
 env:
   # Use docker.io for Docker Hub if empty
